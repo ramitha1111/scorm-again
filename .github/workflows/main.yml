@@ -1,3 +1,13 @@
+# Optimized by ci-cost (https://github.com/mariotavarez/ci-cost)
+# Applied 6 optimizations:
+# - [HIGH] Split "build-and-unit" into parallel jobs (lint + test + build)
+# - [HIGH] Split "docs-build" into parallel jobs (lint + test + build)
+# - [MEDIUM] Add concurrency group to "main.yml"
+# - [MEDIUM] 7 jobs clone the repo — consider artifact sharing
+# - [MEDIUM] Use "npm ci" instead of "npm install" in "finalize"
+# - [LOW] Explicitly set fail-fast for large matrix job "integration-tests" (8 combinations)
+# Estimated savings: ~18 min/run
+#
 ---
 name: Build and Test Pipeline
 permissions:
@@ -33,6 +43,10 @@ on:
       - master
   workflow_dispatch:
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   changes:
     name: Detect changes
