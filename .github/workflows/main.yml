@@ -10,6 +10,10 @@ permissions:
   issues: write
   discussions: write
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches:
@@ -188,7 +192,7 @@ jobs:
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         browser: [ chromium, firefox ]
         shard: [ 1, 2, 3, 4 ]
